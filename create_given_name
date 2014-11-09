@@ -1,0 +1,61 @@
+#!/usr/bin/env python
+# -*- coding: utf-8  -*-
+
+"""
+This scripts creates a new givenname on Wikidata based on input.
+
+TODO: check no item exists, with P31:202444
+"""
+
+import argparse
+import sys
+
+#usage: create_givenname.py [-h] givenname
+parser = argparse.ArgumentParser(description='Creates a given name item on Wikidata.')
+parser.add_argument('givenname', metavar='givenname', nargs=1, help='the given name to create')
+parser.add_argument('genre', metavar='genre', nargs='?', default='D', help='M for a male, F for a female, U for an unisex given name', choices=['M','F','U','D'])
+args = parser.parse_args()
+givenname = args.givenname[0]
+genre = args.genre[0]
+
+#Consistency check
+if givenname[0].islower():
+    sys.stderr.write("Can't create a givenname with the first letter in lower case.\n")
+    sys.exit(5);
+
+#Creates item on Wikidata
+import pywikibot
+site = pywikibot.Site("wikidata", "wikidata")
+repo = site.data_repository()
+
+data = {}
+result = repo.editEntity({}, {}, summary = "Creating empty item for given name " + givenname )
+title = result.get('entity').get('id')
+item = pywikibot.ItemPage(repo, title=title)
+item.get()
+
+labels = {
+    'fr': givenname,
+    'en': givenname
+}
+item.editLabels(labels, summary = 'Adding given name labels')
+
+description = {
+    'en': 'given name',
+    'fr': 'prénom'
+}
+item.editDescriptions(description, summary = 'Adding given name descriptions')
+
+genre_items = {
+	'D': 'Q202444',
+	'M': 'Q12308941',
+	'F': 'Q11879590',
+	'U': 'Q3409032'
+}
+
+claim = pywikibot.Claim(repo, 'P31')
+target = pywikibot.ItemPage(repo, genre_items[genre])
+claim.setTarget(target)
+item.addClaim(claim)
+
+print(title)

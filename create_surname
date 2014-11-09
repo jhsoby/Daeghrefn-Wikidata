@@ -1,0 +1,51 @@
+#!/usr/bin/env python
+
+"""
+This scripts creates a new surname on Wikidata based on input.
+
+TODO: check no item exists, with P31:Q101352
+"""
+
+import argparse
+import sys
+
+#usage: create_surname.py [-h] surname
+parser = argparse.ArgumentParser(description='Creates a surname item on Wikidata.')
+parser.add_argument('surname', metavar='surname', nargs=1, help='the surname to create')
+args = parser.parse_args()
+surname = args.surname[0]
+
+#Consistency check
+#if surname[0].islower():
+#    sys.stderr.write("Can't create a surname with the first letter in lower case.\n")
+#    sys.exit(5);
+
+#Creates item on Wikidata
+import pywikibot
+site = pywikibot.Site("wikidata", "wikidata")
+repo = site.data_repository()
+
+data = {}
+result = repo.editEntity({}, {}, summary = "Creating empty item for surname " + surname)
+title = result.get('entity').get('id')
+item = pywikibot.ItemPage(repo, title=title)
+item.get()
+
+labels = {
+    'fr': surname,
+    'en': surname
+}
+item.editLabels(labels, summary = 'Adding surname labels')
+
+description = {
+    'en': 'family name',
+    'fr': 'nom de famille'
+}
+item.editDescriptions(description, summary = 'Adding surname descriptions')
+
+claim = pywikibot.Claim(repo, 'P31')
+target = pywikibot.ItemPage(repo, 'Q101352')
+claim.setTarget(target)
+item.addClaim(claim)
+
+print(title)

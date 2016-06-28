@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+#
+# Converts key/value lines from a spreadsheet to a JSON object:
+#   1. create a spreadsheet with two columns, one for keys, one for values
+#   2. copy paste into a text file (or save as a file delimited with tabs)
+#   3. `spreadsheet2json neko.dat > neko.json`
+
+import collections
+import json
+import sys
+import os.path
+
+# Parses arguments
+
+if len(sys.argv) < 2:
+    print("Usage: spreadsheet2json <some-copy-paste-of-a-spreadsheet.dat>")
+    sys.exit(1)
+
+source = sys.argv[1]
+if not os.path.exists(source):
+    print("File not found:", source)
+    sys.exit(2)
+
+# Reads tabular data file and produce JSON
+
+with open(source, "r") as file:
+    translations = {}
+    for line in file:
+        record = line.rstrip().split('\t')
+        translations[record[0]] = record[1]
+
+# Sorted JSON output
+
+sorted_translations = collections.OrderedDict(sorted(translations.items()))
+json = json.dumps(sorted_translations, indent=4)
+print(json)

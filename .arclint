@@ -28,7 +28,7 @@
       "type": "flake8",
       "include": [
         "(\\.py$)",
-        "(^notifications$)"
+        "(^tools/spreadsheet2json$)"
       ],
       "severity": {
         "E901": "advice"

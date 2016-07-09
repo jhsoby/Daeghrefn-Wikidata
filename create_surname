@@ -7,6 +7,7 @@ TODO: check no item exists, with P31:Q101352
 """
 
 import argparse
+import json
 import pywikibot
 
 # usage: create_surname.py [-h] surname
@@ -40,17 +41,13 @@ title = result.get('entity').get('id')
 item = pywikibot.ItemPage(repo, title=title)
 item.get()
 
-labels = {
-    'fr': surname,
-    'en': surname
-}
-item.editLabels(labels, summary='Adding surname labels')
+# Gets descriptions from l10n file, and fill labels for these languages.
+with open('l10n/surname.json') as data_file:
+    descriptions = json.load(data_file)
+labels = {lang: surname for lang in descriptions.keys()}
 
-description = {
-    'en': 'family name',
-    'fr': 'nom de famille'
-}
-item.editDescriptions(description, summary='Adding surname descriptions')
+item.editLabels(labels, summary='Adding surname labels')
+item.editDescriptions(descriptions, summary='Adding surname descriptions')
 
 claim = pywikibot.Claim(repo, 'P31')
 target = pywikibot.ItemPage(repo, 'Q101352')

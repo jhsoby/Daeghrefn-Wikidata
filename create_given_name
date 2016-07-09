@@ -8,8 +8,9 @@ TODO: check no item exists, with P31:202444
 """
 
 import argparse
-import sys
+import json
 import pywikibot
+import sys
 
 # Usage: create_givenname.py [-h] givenname
 parser = argparse.ArgumentParser(
@@ -50,24 +51,28 @@ title = result.get('entity').get('id')
 item = pywikibot.ItemPage(repo, title=title)
 item.get()
 
-labels = {
-    'fr': givenname,
-    'en': givenname
-}
-item.editLabels(labels, summary='Adding given name labels')
-
-description = {
-    'en': 'given name',
-    'fr': 'prénom'
-}
-item.editDescriptions(description, summary='Adding given name descriptions')
-
 genre_items = {
     'D': 'Q202444',
     'M': 'Q12308941',
     'F': 'Q11879590',
     'U': 'Q3409032'
 }
+
+l10n_files = {
+    'D': 'l10n/givenname.json',
+    'M': 'l10n/givenname-m.json',
+    'F': 'l10n/givenname-f.json',
+    'U': 'l10n/givenname-u.json'
+}
+
+# Gets descriptions from l10n file, and fill labels for these languages.
+l10n_file = l10n_files[genre]
+with open(l10n_file) as data_file:
+    descriptions = json.load(data_file)
+labels = {lang:givenname for lang in descriptions.keys()}
+
+item.editLabels(labels, summary='Adding given name labels')
+item.editDescriptions(descriptions, summary='Adding given name descriptions')
 
 claim = pywikibot.Claim(repo, 'P31')
 target = pywikibot.ItemPage(repo, genre_items[genre])

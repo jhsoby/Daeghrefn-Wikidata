@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-This scripts creates a new surname on Wikidata based on input.
+This script creates a new surname on Wikidata based on input.
 
 TODO: check no item exists, with P31:Q101352
 """

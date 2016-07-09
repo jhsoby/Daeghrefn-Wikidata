@@ -2,7 +2,7 @@
 # -*- coding: utf-8  -*-
 
 """
-This scripts creates a new givenname on Wikidata based on input.
+This script creates a new givenname on Wikidata based on input.
 
 TODO: check no item exists, with P31:202444
 """

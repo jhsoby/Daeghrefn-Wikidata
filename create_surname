@@ -9,6 +9,7 @@ TODO: check no item exists, with P31:Q101352
 import argparse
 import json
 import pywikibot
+import os
 
 # usage: create_surname.py [-h] surname
 parser = argparse.ArgumentParser(
@@ -42,7 +43,9 @@ item = pywikibot.ItemPage(repo, title=title)
 item.get()
 
 # Gets descriptions from l10n file, and fill labels for these languages.
-with open('l10n/surname.json') as data_file:
+script_directory = os.path.dirname(os.path.realpath(__file__))
+l10n_file = os.path.join(script_directory, 'l10n', 'surname.json')
+with open(l10n_file) as data_file:
     descriptions = json.load(data_file)
 labels = {lang: surname for lang in descriptions.keys()}
 

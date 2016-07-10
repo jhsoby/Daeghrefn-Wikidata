@@ -9,6 +9,7 @@ TODO: check no item exists, with P31:202444
 
 import argparse
 import json
+import os
 import pywikibot
 import sys
 
@@ -66,7 +67,8 @@ l10n_files = {
 }
 
 # Gets descriptions from l10n file, and fill labels for these languages.
-l10n_file = l10n_files[genre]
+script_directory = os.path.dirname(os.path.realpath(__file__))
+l10n_file = os.path.join(script_directory, l10n_files[genre])
 with open(l10n_file) as data_file:
     descriptions = json.load(data_file)
 labels = {lang:givenname for lang in descriptions.keys()}

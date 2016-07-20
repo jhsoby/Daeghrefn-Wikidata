@@ -66,12 +66,18 @@ l10n_files = {
     'U': 'l10n/givenname-u.json'
 }
 
+# Gets whitelist latin languages to avoid create the element in other scripts.
+with open('l10n/latin-whitelist.json') as data_file:
+    latin_languages = json.load(data_file)
+
 # Gets descriptions from l10n file, and fill labels for these languages.
 script_directory = os.path.dirname(os.path.realpath(__file__))
 l10n_file = os.path.join(script_directory, l10n_files[genre])
 with open(l10n_file) as data_file:
     descriptions = json.load(data_file)
-labels = {lang:givenname for lang in descriptions.keys()}
+
+labels_languages = set(descriptions.keys()).intersection(latin_languages)
+labels = {lang:givenname for lang in labels_languages}
 
 item.editLabels(labels, summary='Adding given name labels')
 item.editDescriptions(descriptions, summary='Adding given name descriptions')

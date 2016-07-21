@@ -22,13 +22,6 @@ parser.add_argument(
 args = parser.parse_args()
 surname = args.surname[0]
 
-# Consistency check
-# if surname[0].islower():
-#    sys.stderr.write(
-#        "Can't create a surname with the first letter in lower case.\n"
-#    )
-#    sys.exit(5);
-
 # Creates item on Wikidata
 site = pywikibot.Site("wikidata", "wikidata")
 repo = site.data_repository()

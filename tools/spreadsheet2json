@@ -23,9 +23,9 @@ if not os.path.exists(source):
 
 # Reads tabular data file and produce JSON
 
-with open(source, "r") as file:
+with open(source, "r") as translations_file:
     translations = {}
-    for line in file:
+    for line in translations_file:
         record = line.rstrip().split('\t')
         translations[record[0]] = record[1]
 
